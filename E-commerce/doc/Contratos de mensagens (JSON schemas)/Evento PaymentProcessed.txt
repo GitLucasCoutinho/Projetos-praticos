@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PaymentProcessed",
+  "type": "object",
+  "properties": {
+    "paymentId": { "type": "string" },
+    "orderId": { "type": "string" },
+    "status": { "type": "string", "enum": ["APPROVED", "REJECTED"] },
+    "processedAt": { "type": "string", "format": "date-time" },
+    "reason": { "type": "string" }
+  },
+  "required": ["paymentId", "orderId", "status", "processedAt"]
+}
