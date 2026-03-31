@@ -1,7 +1,10 @@
 package com.ocooldev.orders.controller;
 
+import com.ocooldev.orders.dto.OrderRequestDTO;
+import com.ocooldev.orders.dto.OrderResponseDTO;
 import com.ocooldev.orders.entity.Order;
 import com.ocooldev.orders.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +23,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
-        Order savedOrder = orderService.createOrder(order);
+    public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody OrderRequestDTO dto) {
+        OrderResponseDTO savedOrder = orderService.createOrder(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedOrder);
     }
 }

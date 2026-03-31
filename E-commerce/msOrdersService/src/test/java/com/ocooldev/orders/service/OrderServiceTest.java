@@ -1,6 +1,7 @@
 package com.ocooldev.orders.service;
 
-import com.ocooldev.orders.entity.Order;
+import com.ocooldev.orders.dto.OrderRequestDTO;
+import com.ocooldev.orders.dto.OrderResponseDTO;
 import com.ocooldev.orders.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,15 @@ class OrderServiceTest {
 
     @Test
     void testCreateOrder() {
-        Order order = new Order();
-        order.setCustomerName("Lucas");
-        order.setTotalAmount(100.0);
+        // -> Cria o DTO de entrada simulando o payload da API
+        OrderRequestDTO dto = new OrderRequestDTO();
+        dto.setCustomerName("Lucas");
+        dto.setTotalAmount(100.0);
 
-        Order saved = orderService.createOrder(order);
+        // -> Chama o service, que retorna um DTO de saída
+        OrderResponseDTO saved = orderService.createOrder(dto);
 
+        // -> Valida que o ID foi gerado e que os dados estão corretos
         assertNotNull(saved.getId());
         assertEquals("Lucas", saved.getCustomerName());
     }

@@ -1,38 +1,44 @@
 package com.ocooldev.orders.service;
 
-// Importa a entidade Order, que representa o pedido no banco
-import com.ocooldev.orders.entity.Order;
-// Importa o repositório JPA para salvar e buscar pedidos
-import com.ocooldev.orders.repository.OrderRepository;
-// Importa o KafkaTemplate, usado para enviar mensagens para o Kafka
-import org.springframework.kafka.core.KafkaTemplate;
-// Marca a classe como um componente de serviço do Spring
+import com.ocooldev.orders.dto.OrderRequestDTO;   // -> DTO de entrada (payload da requisição)
+import com.ocooldev.orders.dto.OrderResponseDTO;  // -> DTO de saída (payload da resposta)
+import com.ocooldev.orders.entity.Order;          // -> Entidade JPA (persistência no banco)
+import com.ocooldev.orders.repository.OrderRepository; // -> Repositório JPA
+import org.springframework.kafka.core.KafkaTemplate;   // -> Para enviar mensagens ao Kafka
 import org.springframework.stereotype.Service;
 
-@Service // -> Indica que essa classe é um "Service" gerenciado pelo Spring (injeção de dependência)
+@Service // -> Marca a classe como um Service gerenciado pelo Spring
 public class OrderService {
 
-    // -> Dependência para acessar o banco de dados (Postgres)
-    private final OrderRepository orderRepository;
-    // -> Dependência para enviar mensagens para o Kafka
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final OrderRepository orderRepository; // -> Acesso ao banco
+    private final KafkaTemplate<String, String> kafkaTemplate; // -> Publicação no Kafka
 
-    // -> Construtor: o Spring injeta automaticamente o OrderRepository e o KafkaTemplate
+    // -> Construtor com injeção de dependências
     public OrderService(OrderRepository orderRepository, KafkaTemplate<String, String> kafkaTemplate) {
         this.orderRepository = orderRepository;
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    // -> Método principal: cria um pedido
-    public Order createOrder(Order order) {
-        // -> Salva o pedido no banco de dados usando o JPA Repository
+    // -> Método principal: cria um pedido a partir de um DTO
+    public OrderResponseDTO createOrder(OrderRequestDTO dto) {
+        // -> Converte o DTO para a entidade JPA
+        Order order = new Order();
+        order.setCustomerName(dto.getCustomerName());
+        order.setTotalAmount(dto.getTotalAmount());
+
+        // -> Salva no banco
         Order savedOrder = orderRepository.save(order);
 
-        // -> Publica uma mensagem no Kafka, no tópico "order-created"
-        //    O conteúdo da mensagem é o ID do pedido salvo, convertido para String
+        // -> Publica evento no Kafka com o ID do pedido
         kafkaTemplate.send("order-created", savedOrder.getId().toString());
 
-        // -> Retorna o pedido salvo para o Controller
-        return savedOrder;
+        // -> Converte a entidade salva para DTO de resposta
+        OrderResponseDTO response = new OrderResponseDTO();
+        response.setId(savedOrder.getId());
+        response.setCustomerName(savedOrder.getCustomerName());
+        response.setTotalAmount(savedOrder.getTotalAmount());
+
+        // -> Retorna o DTO de saída para o Controller
+        return response;
     }
 }
