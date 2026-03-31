@@ -6,6 +6,10 @@ spring:
     deserialization:
       fail-on-unknown-properties: true
 
+jwt:
+  secret: umaChaveSuperSecretaComMaisDe32Caracteres123456
+  expiration: 3600000 # 1 hora em milissegundos
+
 # Configuração para rodar LOCALMENTE (via IntelliJ/Maven)
 ---
 spring:

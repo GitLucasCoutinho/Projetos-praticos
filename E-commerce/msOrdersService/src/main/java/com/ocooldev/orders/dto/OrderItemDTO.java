@@ -13,6 +13,15 @@ public class OrderItemDTO {
     private int quantity;
     // -> Quantidade do produto no pedido (mínimo 1)
 
+    public OrderItemDTO() {
+        // Construtor padrão necessário para a desserialização JSON
+    }
+
+    public OrderItemDTO(String productId, int quantity) {
+        setProductId(productId);
+        setQuantity(quantity);
+    }
+
     // Getters e Setters
     public String getProductId() {
         return productId;
