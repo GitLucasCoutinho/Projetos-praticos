@@ -27,4 +27,19 @@ public class AuthMetrics {
         registry.timer("auth_token_validation_time")
                 .record(millis, java.util.concurrent.TimeUnit.MILLISECONDS);
     }
+
+    public void incrementOrdersCreated() {
+        registry.counter("orders_created_total").increment();
+    }
+
+    public void incrementOrdersFailed() {
+        registry.counter("orders_failed_total").increment();
+    }
+
+    public void recordOrderProcessingTime(long millis) {
+        registry.timer("orders_processing_time")
+                .record(millis, java.util.concurrent.TimeUnit.MILLISECONDS);
+    }
+
+
 }
