@@ -5,33 +5,36 @@ package com.ocooldev.orders.dto;
 //    Diferente do RequestDTO, aqui não validamos nada,
 //    apenas estruturamos o que será retornado.
 
+import java.util.UUID;
+
 public class OrderResponseDTO {
 
-    // -> ID do pedido gerado pelo banco (chave primária)
-    private Long id;
+    // -> ID do pedido gerado (UUID em formato String)
+    private UUID id;
 
-    // -> Nome do cliente que fez o pedido
-    private String customerName;
+    // -> Identificador do cliente que fez o pedido
+    //    (mantemos customerId para alinhar com o contrato e entidades)
+    private String customerId;
 
     // -> Valor total do pedido
     private Double totalAmount;
 
     // -> Métodos getters e setters para acessar e modificar os atributos
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
     public Double getTotalAmount() {
