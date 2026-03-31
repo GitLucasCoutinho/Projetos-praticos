@@ -2,12 +2,17 @@ spring:
   application:
     name: msOrdersService
 
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
 # Configuração para rodar LOCALMENTE (via IntelliJ/Maven)
 ---
 spring:
   config:
     activate:
       on-profile: local
+  kafka:
+    bootstrap-servers: localhost:29092
   datasource:
     url: jdbc:postgresql://localhost:5432/ecommerce_db
     username: ecommerce
@@ -26,6 +31,8 @@ spring:
   config:
     activate:
       on-profile: docker
+  kafka:
+    bootstrap-servers: kafka:9092
   datasource:
     url: jdbc:postgresql://postgres:5432/ecommerce_db
     username: ecommerce
@@ -37,12 +44,3 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
-
-kafka-ui:
-  image: provectuslabs/kafka-ui:latest
-  ports:
-    - "8085:8080"
-  environment:
-    KAFKA_CLUSTERS_0_NAME: local
-    KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092

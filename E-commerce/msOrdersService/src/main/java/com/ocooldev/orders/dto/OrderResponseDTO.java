@@ -1,22 +1,23 @@
-package com.ocooldev.orders.repository;
+package com.ocooldev.orders.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+// -> Esta classe não precisa de imports de validação,
+//    pois ela é usada apenas para devolver dados (saída da API).
+//    Diferente do RequestDTO, aqui não validamos nada,
+//    apenas estruturamos o que será retornado.
 
-@Entity
-@Table(name = "orders")
-public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class OrderResponseDTO {
+
+    // -> ID do pedido gerado pelo banco (chave primária)
     private Long id;
 
+    // -> Nome do cliente que fez o pedido
     private String customerName;
+
+    // -> Valor total do pedido
     private Double totalAmount;
 
-    // Getters e Setters
+    // -> Métodos getters e setters para acessar e modificar os atributos
+
     public Long getId() {
         return id;
     }

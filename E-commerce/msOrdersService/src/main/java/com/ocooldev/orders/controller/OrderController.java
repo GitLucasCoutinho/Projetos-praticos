@@ -1,6 +1,6 @@
 package com.ocooldev.orders.controller;
 
-import com.ocooldev.orders.repository.Order;
+import com.ocooldev.orders.entity.Order;
 import com.ocooldev.orders.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

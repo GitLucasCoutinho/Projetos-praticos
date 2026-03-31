@@ -1,6 +1,6 @@
 package com.ocooldev.orders.service;
 
-import com.ocooldev.orders.repository.Order;
+import com.ocooldev.orders.entity.Order;
 import com.ocooldev.orders.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
