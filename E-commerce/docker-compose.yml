@@ -11,9 +11,10 @@ services:
   # Kafka
   kafka:
     image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
     ports:
-      - "9092:9092"
-      - "29092:29092"
+      - "9092:9092"   # usado pelos containers
+      - "29092:29092" # usado pelo host
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -72,7 +73,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ecommerce_db
       SPRING_DATASOURCE_USERNAME: ecommerce
       SPRING_DATASOURCE_PASSWORD: ecommerce
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
   # Payments Service
   payments-service:
@@ -87,7 +88,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ecommerce_db
       SPRING_DATASOURCE_USERNAME: ecommerce
       SPRING_DATASOURCE_PASSWORD: ecommerce
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
   # Inventory Service
   inventory-service:
