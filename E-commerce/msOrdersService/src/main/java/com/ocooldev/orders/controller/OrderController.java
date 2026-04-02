@@ -1,51 +1,53 @@
 package com.ocooldev.orders.controller;
 
-import com.ocooldev.orders.dto.OrderRequestDTO;   // -> DTO de entrada (dados da requisição)
-import com.ocooldev.orders.dto.OrderResponseDTO;  // -> DTO de saída (dados da resposta)
-import com.ocooldev.orders.service.OrderServiceInterface; // -> Interface do serviço (abstração)
-import com.ocooldev.orders.security.AuthMetrics; // -> Classe de métricas personalizadas
+import com.ocooldev.orders.dto.OrderRequestDTO;
+import com.ocooldev.orders.dto.OrderResponseDTO;
+import com.ocooldev.orders.service.OrderServiceInterface;
+import com.ocooldev.orders.security.AuthMetrics;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController // -> Indica que essa classe é um Controller REST (retorna JSON)
-@RequestMapping("/orders") // -> Define o endpoint base: todas as rotas começam com /orders
+@RestController
+@RequestMapping("/orders")
 public class OrderController {
 
     private final OrderServiceInterface orderService;
-    private final AuthMetrics authMetrics; // -> Para registrar métricas de pedidos
+    private final AuthMetrics authMetrics;
 
-    // -> Construtor: o Spring injeta automaticamente a implementação de OrderServiceInterface e AuthMetrics
     public OrderController(OrderServiceInterface orderService, AuthMetrics authMetrics) {
         this.orderService = orderService;
         this.authMetrics = authMetrics;
     }
 
-    @PostMapping // -> Mapeia requisições HTTP POST para /orders
+    @Operation(
+            summary = "Criação de pedido",
+            description = "Recebe os dados de um pedido (OrderRequestDTO) e retorna o pedido criado (OrderResponseDTO)."
+    )
+    @ApiResponse(responseCode = "201", description = "Pedido criado com sucesso")
+    @ApiResponse(responseCode = "400", description = "Dados inválidos na requisição")
+    @ApiResponse(responseCode = "401", description = "Não autorizado - token JWT ausente ou inválido")
+    @ApiResponse(responseCode = "500", description = "Erro interno ao processar o pedido")
+    @PostMapping
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<OrderResponseDTO> createOrder(
-            @Valid @RequestBody OrderRequestDTO dto // -> Recebe o corpo da requisição como DTO e valida os campos
+            @Valid @RequestBody OrderRequestDTO dto
     ) {
         try {
             long start = System.currentTimeMillis();
 
-            // -> Chama o service para criar o pedido
             OrderResponseDTO savedOrder = orderService.createOrder(dto);
 
-            // -> Registra métrica de pedido criado
             authMetrics.incrementOrdersCreated();
-
-            // -> Registra tempo de processamento do pedido
             authMetrics.recordOrderProcessingTime(System.currentTimeMillis() - start);
 
-            // -> Retorna o DTO de saída com status 201 Created
             return ResponseEntity.status(HttpStatus.CREATED).body(savedOrder);
 
         } catch (Exception e) {
-            // -> Registra falha na criação do pedido
             authMetrics.incrementOrdersFailed();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

@@ -76,10 +76,23 @@ mvn spring-boot:run -Dspring.profiles.active=local
 
 ### 4. Verificar se Está Rodando
 
-- **API**: Acesse `http://localhost:8080`
-- **Swagger UI**: `http://localhost:8080/swagger-ui/index.html`
-- **Actuator Health**: `http://localhost:8080/actuator/health`
+- **API (Local)**: Acesse `http://localhost:8083`
+- **Swagger UI (Local)**: `http://localhost:8083/swagger-ui.html` ✅
+- **Actuator Health (Local)**: `http://localhost:8083/actuator/health`
 - **Logs**: Verifique no console ou use `docker logs` para os containers.
+
+**Nota**: A porta local é **8083** para evitar conflitos com outras aplicações. O Docker usa a porta **8080**.
+
+O Swagger UI permite testar todos os endpoints da API de forma visual:
+
+1. Acesse: `http://localhost:8080/swagger-ui.html`
+2. Você verá todos os endpoints disponíveis listados
+3. Clique em um endpoint para expandir e ver os detalhes
+4. Clique no botão **"Try it out"** para testar
+5. Preencha os parâmetros necessários
+6. Clique em **"Execute"** para fazer a requisição
+
+**Documentação OpenAPI em JSON**: `http://localhost:8080/v3/api-docs`
 
 ### 5. Testar a API
 
@@ -250,6 +263,40 @@ Execute com `mvn test`.
 - **Subir só infraestrutura**: `docker compose up -d postgres kafka zookeeper`
 - **Ver containers**: `docker ps`
 - **Logs do serviço**: `docker logs -f orders-service`
+
+## 🆘 Troubleshooting
+
+### Erro: "Port 8080 was already in use"
+
+Se você receber este erro ao tentar executar a aplicação:
+
+```
+Web server failed to start. Port 8080 was already in use.
+```
+
+**Solução 1: Matar o processo que está usando a porta**
+
+```powershell
+# PowerShell (como Administrador)
+netstat -ano | Select-String "8080"    # Encontra o PID
+taskkill /PID <PID> /F                 # Mata o processo
+```
+
+**Solução 2: Usar uma porta diferente**
+
+Adicione ao arquivo `src/main/resources/application.yaml`:
+
+```yaml
+server:
+  port: 8081  # ou qualquer porta disponível
+```
+
+Ou execute:
+```bash
+mvn spring-boot:run "-Dspring-boot.run.profiles=local" -Dspring-boot.run.arguments="--server.port=8081"
+```
+
+Para mais detalhes, veja o arquivo `PORT_ALREADY_IN_USE.md`.
 
 ## 🤝 Contribuição
 

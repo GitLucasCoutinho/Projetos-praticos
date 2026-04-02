@@ -21,6 +21,10 @@ public class OrderRequestDTO {
     private Double totalAmount;
     // -> Valor total do pedido
 
+
+    public OrderRequestDTO() {
+        // Construtor padrão necessário para serialização
+    }
     // Getters e Setters
     public String getCustomerId() {
         return customerId;

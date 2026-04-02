@@ -9,6 +9,10 @@ import java.util.UUID;
 
 public class OrderResponseDTO {
 
+
+    public OrderResponseDTO() {
+        // Construtor padrão necessário para serialização
+    }
     // -> ID do pedido gerado (UUID em formato String)
     private UUID id;
 

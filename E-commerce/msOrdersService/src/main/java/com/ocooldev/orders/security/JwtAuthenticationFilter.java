@@ -12,49 +12,67 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-//# Filtro que valida o token JWT em cada requisição
-@Component // -> Registra essa classe como um "bean" do Spring, para ser usada automaticamente
+/**
+ * Filtro JWT que intercepta todas as requisições HTTP e valida o token.
+ * Extende OncePerRequestFilter para garantir execução única por requisição.
+ */
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    // Esse filtro é executado uma vez por requisição (por isso "OncePerRequestFilter")
 
     private final JwtUtil jwtUtil;
 
-    // Injeção do utilitário JWT (responsável por gerar/validar tokens)
+    // Injeção do utilitário responsável por validar e extrair informações do token
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Define quais endpoints NÃO devem passar pelo filtro JWT.
+     * Isso evita que Swagger, Actuator e outros endpoints públicos sejam bloqueados.
+     */
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/actuator");
+    }
+
+    /**
+     * Lógica principal do filtro:
+     * - Extrai o header Authorization
+     * - Valida o token JWT
+     * - Se válido, registra o usuário no contexto de segurança
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
 
-        // 1. Extrai o header "Authorization" da requisição
+        // Extrai o header "Authorization"
         String authHeader = request.getHeader("Authorization");
 
-        // 2. Verifica se o header existe e começa com "Bearer "
+        // Verifica se existe e começa com "Bearer "
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            // Remove o prefixo "Bearer " e pega só o token
             String token = authHeader.substring(7);
 
-            // 3. Valida o token usando JwtUtil
+            // Valida o token
             if (jwtUtil.validateToken(token)) {
-                // Se válido, extrai o username do token
                 String username = jwtUtil.extractUsername(token);
 
-                // 4. Cria um objeto de autenticação para o Spring Security
+                // Cria objeto de autenticação para o Spring Security
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(username, null, null);
 
                 // Adiciona detalhes da requisição (IP, sessão, etc.)
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // 5. Registra o usuário autenticado no contexto de segurança
+                // Registra o usuário autenticado no contexto de segurança
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
-        // 6. Continua o fluxo da requisição (passa para o próximo filtro ou controller)
+        // Continua o fluxo da requisição
         chain.doFilter(request, response);
     }
 }

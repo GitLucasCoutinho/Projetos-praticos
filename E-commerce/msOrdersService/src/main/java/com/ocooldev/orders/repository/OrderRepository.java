@@ -7,10 +7,13 @@ import com.ocooldev.orders.entity.Order;
 //    Ela fornece métodos prontos para operações no banco (save, findAll, findById, delete, etc.)
 import org.springframework.data.jpa.repository.JpaRepository;
 
+// -> Importa a classe UUID
+import java.util.UUID;
+
 // -> Interface que estende JpaRepository
 //    O primeiro parâmetro é a entidade (Order)
-//    O segundo é o tipo da chave primária (Long)
-public interface OrderRepository extends JpaRepository<Order, Long> {
+//    O segundo é o tipo da chave primária (UUID)
+public interface OrderRepository extends JpaRepository<Order, UUID> {
     // -> Não precisa escrever nada aqui por enquanto.
     //    O Spring Data JPA já gera automaticamente os métodos básicos de CRUD.
     //    Exemplo: orderRepository.save(order), orderRepository.findAll(), orderRepository.findById(id).

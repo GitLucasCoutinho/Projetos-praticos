@@ -1,6 +1,7 @@
 package com.ocooldev.orders.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity // -> Indica que essa classe será mapeada como tabela no banco
 public class OrderItem {
@@ -18,6 +19,7 @@ public class OrderItem {
 
     @ManyToOne // -> Muitos itens pertencem a um único pedido
     @JoinColumn(name = "order_id")
+    @JsonIgnore
     private Order order;
     // -> Relacionamento com a entidade Order
 
