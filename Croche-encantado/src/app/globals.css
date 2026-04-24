@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  
+  /* Mapeia as cores do Tailwind para as variáveis do nosso tema */
+  --color-rose-50: var(--rose-50);
+  --color-rose-100: var(--rose-100);
+  --color-rose-200: var(--rose-200);
+  --color-rose-300: var(--rose-300);
+  --color-rose-400: var(--rose-400);
+  --color-rose-500: var(--rose-500);
+  
+  --color-card: var(--card);
+  
+  --color-zinc-800: var(--zinc-800);
+  --color-zinc-900: var(--zinc-900);
+}
+
+:root {
+  /* Variáveis Dinâmicas do Tema (Serão controladas pelo JS) */
+  --background: #fdf8f5;
+  --foreground: #4a4a4a;
+  --rose-50: #fce7f3;
+  --rose-100: #ffe4e6;
+  --rose-200: #fecdd3;
+  --rose-300: #fda4af;
+  --rose-400: #fb7185;
+  --rose-500: #e11d48;
+  --zinc-800: #27272a;
+  --zinc-900: #09090b;
+
+  /* Mantendo variáveis legadas se necessário */
+  --pastel-pink: var(--rose-50);
+  --accent-color: var(--rose-300);
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
