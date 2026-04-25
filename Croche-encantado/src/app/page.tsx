@@ -31,7 +31,7 @@ export default function Home() {
 
   useEffect(() => {
     const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
-    
+
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const prods: Product[] = [];
       querySnapshot.forEach((doc) => {
@@ -53,11 +53,10 @@ export default function Home() {
           <div className="relative">
             <button
               onClick={() => setShowThemeMenu(!showThemeMenu)}
-              className={`p-2.5 rounded-full transition-all border ${
-                showThemeMenu 
-                  ? "bg-rose-50 border-rose-200 text-rose-500 shadow-inner" 
+              className={`p-2.5 rounded-full transition-all border ${showThemeMenu
+                  ? "bg-rose-50 border-rose-200 text-rose-500 shadow-inner"
                   : "hover:bg-rose-50 border-transparent text-zinc-600 hover:border-rose-100"
-              }`}
+                }`}
               title="Mudar Tema"
             >
               <Palette size={18} />
@@ -79,15 +78,13 @@ export default function Home() {
                           setLocalTheme(key);
                           setShowThemeMenu(false);
                         }}
-                        className={`relative flex flex-col items-center justify-center p-2 rounded-xl transition-all group ${
-                          currentTheme === key ? "bg-rose-50/20" : "hover:bg-rose-50/10"
-                        }`}
+                        className={`relative flex flex-col items-center justify-center p-2 rounded-xl transition-all group ${currentTheme === key ? "bg-rose-50/20" : "hover:bg-rose-50/10"
+                          }`}
                         title={theme.name}
                       >
-                        <div 
-                          className={`w-8 h-8 rounded-full border border-black/5 shadow-sm transition-transform group-hover:scale-110 ${
-                            currentTheme === key ? "ring-2 ring-rose-400 ring-offset-2 ring-offset-background" : ""
-                          }`}
+                        <div
+                          className={`w-8 h-8 rounded-full border border-black/5 shadow-sm transition-transform group-hover:scale-110 ${currentTheme === key ? "ring-2 ring-rose-400 ring-offset-2 ring-offset-background" : ""
+                            }`}
                           style={{ backgroundColor: theme.primary }}
                         />
                         {currentTheme === key && (
@@ -105,8 +102,8 @@ export default function Home() {
 
           <div className="h-6 w-px bg-zinc-200" />
 
-          <Link 
-            href="/admin" 
+          <Link
+            href="/admin"
             className="flex items-center gap-2 text-xs font-medium text-rose-300 hover:text-rose-400 transition-colors uppercase tracking-widest"
           >
             <LogIn size={14} /> Área Administrativa
@@ -120,7 +117,7 @@ export default function Home() {
             Crochê <span className="text-rose-300 transition-colors">Encantado</span>
           </h1>
           <p className="text-lg text-zinc-500 font-light max-w-2xl mx-auto italic leading-relaxed transition-colors">
-            Transformando fios em poesia para decorar o seu lar com o aconchego que você merece.
+            Transformando fios para decorar o seu lar com o aconchego que você merece.
           </p>
         </div>
       </header>
@@ -135,9 +132,9 @@ export default function Home() {
         ) : products.length > 0 ? (
           <div className="grid grid-cols-1 gap-12">
             {products.map((product) => (
-              <ProductCard 
-                key={product.id} 
-                product={product} 
+              <ProductCard
+                key={product.id}
+                product={product}
                 onImageClick={(url) => setSelectedImageUrl(url)}
               />
             ))}
@@ -160,20 +157,20 @@ export default function Home() {
 
       {/* Full Image Modal */}
       {selectedImageUrl && (
-        <div 
+        <div
           className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300"
           onClick={() => setSelectedImageUrl(null)}
         >
           <div className="absolute inset-0 bg-zinc-900/90 backdrop-blur-md" />
-          
-          <button 
+
+          <button
             className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[210] p-2 hover:bg-white/10 rounded-full"
             onClick={() => setSelectedImageUrl(null)}
           >
             <X size={32} />
           </button>
 
-          <div 
+          <div
             className="relative w-full h-full max-w-5xl max-h-[90vh] z-[205] animate-in zoom-in-95 duration-300"
             onClick={(e) => e.stopPropagation()}
           >
