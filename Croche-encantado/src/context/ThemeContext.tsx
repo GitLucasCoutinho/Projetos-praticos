@@ -69,33 +69,6 @@ export const themes: Record<string, Theme> = {
     card: "rgba(255, 255, 255, 0.8)",
     border: "#fde68a",
   },
-  dark: {
-    name: "Noturno Rosa",
-    background: "#000000",
-    foreground: "#ffe4e6", // Rosa bem clarinho para o texto
-    primary: "#1a0a0c",    // Preto com leve toque de vinho
-    accent: "#fb7185",     // Rosa vibrante para destaques
-    card: "rgba(20, 10, 12, 0.9)",
-    border: "#4c0519",     // Borda em tom de vinho escuro
-  },
-  midnight: {
-    name: "Azul Meia-Noite",
-    background: "#020617",
-    foreground: "#f8fafc",
-    primary: "#0f172a",
-    accent: "#60a5fa",
-    card: "rgba(15, 23, 42, 0.9)",
-    border: "#1e293b",
-  },
-  forest: {
-    name: "Verde Floresta",
-    background: "#022c22",
-    foreground: "#f0fdf4",
-    primary: "#064e3b",
-    accent: "#34d399",
-    card: "rgba(6, 78, 59, 0.9)",
-    border: "#065f46",
-  },
   vintage: {
     name: "Creme Vintage",
     background: "#fdf5e6",
@@ -138,9 +111,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const applyTheme = (themeKey: string) => {
-    const theme = themes[themeKey];
+    const theme = themes[themeKey] || themes.rose;
     const root = document.documentElement;
-    const isDark = themeKey.includes("dark") || themeKey.includes("midnight") || themeKey.includes("forest");
     
     // Cores de Base
     root.style.setProperty("--background", theme.background);
@@ -153,11 +125,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     root.style.setProperty("--rose-200", theme.border);    
     root.style.setProperty("--rose-300", theme.accent);    
     root.style.setProperty("--rose-400", theme.accent);    
-    root.style.setProperty("--rose-500", isDark ? "#ffffff" : theme.foreground); 
+    root.style.setProperty("--rose-500", theme.foreground); 
     
     // Cores de Neutros
     root.style.setProperty("--zinc-800", theme.foreground);
-    root.style.setProperty("--zinc-900", isDark ? "#ffffff" : "#09090b");
+    root.style.setProperty("--zinc-900", "#09090b");
   };
 
   const setGlobalTheme = async (themeKey: string) => {

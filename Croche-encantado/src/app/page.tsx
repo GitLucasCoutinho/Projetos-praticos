@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
 import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
 import ProductCard from "@/components/ProductCard";
-import { Loader2, LogIn, Palette, Sun, Moon, Check } from "lucide-react";
+import { Loader2, LogIn, Palette, Check, X } from "lucide-react";
 import Link from "next/link";
 import { useTheme, themes } from "@/context/ThemeContext";
+import Image from "next/image";
 
 interface Product {
   id: string;
@@ -25,6 +26,7 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [showThemeMenu, setShowThemeMenu] = useState(false);
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
   const { currentTheme, setLocalTheme } = useTheme();
 
   useEffect(() => {
@@ -66,7 +68,7 @@ export default function Home() {
                 <div className="fixed inset-0 z-40" onClick={() => setShowThemeMenu(false)} />
                 <div className="absolute top-full right-0 mt-3 w-56 bg-card rounded-[1.5rem] shadow-2xl border border-rose-100/20 py-3 z-50 animate-in fade-in zoom-in duration-200 origin-top-right transition-colors">
                   <div className="px-5 py-2 mb-2 border-b border-rose-100/10 flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Cores</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Paleta de Cores</span>
                     <Palette size={12} className="text-rose-300" />
                   </div>
                   <div className="px-3 grid grid-cols-3 gap-2">
@@ -88,12 +90,6 @@ export default function Home() {
                           }`}
                           style={{ backgroundColor: theme.primary }}
                         />
-                        <div className="absolute -top-1 -right-1 bg-card rounded-full p-0.5 shadow-sm border border-rose-100/20 transition-colors">
-                          {key.includes("dark") || key.includes("midnight") || key.includes("forest") 
-                            ? <Moon size={10} className="text-rose-400" /> 
-                            : <Sun size={10} className="text-rose-400" />
-                          }
-                        </div>
                         {currentTheme === key && (
                           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                             <Check size={14} className="text-rose-500" />
@@ -139,7 +135,11 @@ export default function Home() {
         ) : products.length > 0 ? (
           <div className="grid grid-cols-1 gap-12">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                onImageClick={(url) => setSelectedImageUrl(url)}
+              />
             ))}
           </div>
         ) : (
@@ -157,6 +157,37 @@ export default function Home() {
           &copy; {new Date().getFullYear()} Crochê Encantado. Todos os direitos reservados.
         </p>
       </footer>
+
+      {/* Full Image Modal */}
+      {selectedImageUrl && (
+        <div 
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-10 animate-in fade-in duration-300"
+          onClick={() => setSelectedImageUrl(null)}
+        >
+          <div className="absolute inset-0 bg-zinc-900/90 backdrop-blur-md" />
+          
+          <button 
+            className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors z-[210] p-2 hover:bg-white/10 rounded-full"
+            onClick={() => setSelectedImageUrl(null)}
+          >
+            <X size={32} />
+          </button>
+
+          <div 
+            className="relative w-full h-full max-w-5xl max-h-[90vh] z-[205] animate-in zoom-in-95 duration-300"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={selectedImageUrl}
+              alt="Visualização do produto"
+              fill
+              className="object-contain"
+              quality={100}
+              priority
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

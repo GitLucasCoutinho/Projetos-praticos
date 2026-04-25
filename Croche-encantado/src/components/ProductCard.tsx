@@ -13,9 +13,10 @@ interface ProductCardProps {
     price: string;
     imageUrl: string;
   };
+  onImageClick?: (imageUrl: string) => void;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, onImageClick }: ProductCardProps) {
   return (
     <div className="group bg-card backdrop-blur-md rounded-[2.5rem] overflow-hidden shadow-sm border border-rose-100 hover:shadow-xl hover:shadow-rose-100/20 transition-all duration-500">
       <div className="flex flex-col md:flex-row min-h-[350px]">
@@ -58,14 +59,24 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Image Section */}
-        <div className="relative flex-1 min-h-[350px] md:min-h-auto order-2 overflow-hidden">
+        <div 
+          className="relative flex-1 min-h-[350px] md:min-h-auto order-2 overflow-hidden cursor-zoom-in group/image"
+          onClick={() => onImageClick?.(product.imageUrl)}
+        >
           <Image
             src={product.imageUrl}
             alt={product.name}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            className="object-cover group-hover/image:scale-110 transition-transform duration-700"
             sizes="(max-width: 768px) 100vw, 50vw"
           />
+          <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/10 transition-colors duration-500 flex items-center justify-center">
+            <div className="opacity-0 group-hover/image:opacity-100 transform translate-y-4 group-hover/image:translate-y-0 transition-all duration-500">
+              <span className="bg-white/90 backdrop-blur-sm text-zinc-900 px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+                Ver em Tamanho Real
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
